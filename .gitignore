@@ -1,0 +1,3 @@
+libvlc-win/
+src/*.autosave
+CMakeLists.txt.user
