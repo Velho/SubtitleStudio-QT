@@ -14,6 +14,15 @@ class StudioWindow;
 
 /**
  * Wikipage about SubRip .srt format: en.wikipedia.org/wiki/SubRip
+ * Plain structure of .srt format:
+ *
+ * 1
+ * 00:00:10,500 --> 00:00:13,000
+ * Elephant's Dream
+ * 2
+ * 00:00:15,000 --> 00:00:18,000
+ * At the left we can see...
+ *
  *
  * TODO Implement sliders.
  * @brief The StudioWindow class
@@ -35,10 +44,10 @@ private slots:
 
     void updateInterface();
 
-    void on_volSlider_valueChanged(int value);
-    void on_msSlider_valueChanged(int value);
-    void on_secSlider_valueChanged(int value);
-    void on_timeSlider_valueChanged(int value);
+    void on_timeSlider_sliderMoved(int position);
+    void on_volSlider_sliderMoved(int position);
+    void on_secSlider_sliderMoved(int position);
+    void on_msSlider_sliderMoved(int position);
 
 private:
     Ui::StudioWindow *ui;
@@ -50,6 +59,9 @@ private:
     QString makeURI(QString path) {
         return "file:///" + path;
     }
+
+    void updateVolLabel(int);
+    void updateTimeLabel(long);
 
     void startPlayer();
     void stopPlayer();

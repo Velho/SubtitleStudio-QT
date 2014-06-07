@@ -25,12 +25,16 @@ StudioWindow::StudioWindow(QWidget *parent) :
     plt.setColor(QPalette::Window, Qt::black);
     ui->videoWidget->setPalette(plt);
 
+    // Start the interface update timer.
+    timer->start(100);
+
     QObject::connect(ui->playBtn, SIGNAL(clicked()), this, SLOT(onPlay()));
     QObject::connect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(onStop()));
     connect(timer, SIGNAL(timeout()), this, SLOT(updateInterface()));
 }
 
 StudioWindow::~StudioWindow() {
+    // Release plr if not already stopped.
     if(vlcplr) {
         libvlc_media_player_stop(vlcplr);
         libvlc_media_player_release(vlcplr);
@@ -38,6 +42,7 @@ StudioWindow::~StudioWindow() {
     if(vlc)
         libvlc_release(vlc);
 
+    // Release the allocated memory.
     delete timer;
     delete ui;
 }
@@ -80,12 +85,14 @@ void StudioWindow::on_actionOpen_file_triggered() {
     libvlc_media_release(media);
 
     // FOLLOWING WORKS ONLY ON WINDOWS.
-    // On linux do X11 integration, on mac do nsobject(??).
+    // On linux do X11 integration, on mac do nsobject(??) or whatever is the winmgr.
     libvlc_media_player_set_hwnd(vlcplr, reinterpret_cast<void*>(ui->videoWidget->winId()));
 
     // Lets play it.
     libvlc_media_player_play(vlcplr);
-    ui->playBtn->setText("Pause");
+
+    if(file.size() != 0)
+        ui->playBtn->setText("Pause");
 }
 
 void StudioWindow::on_actionQuit_triggered() {
@@ -102,43 +109,20 @@ void StudioWindow::updateInterface() {
     if(!vlcplr)
         return;
 
-    // TODO Update timeline.
+    // Update Time label.
+    long time = libvlc_media_player_get_time(vlcplr);
+    updateTimeLabel(time);
+
+    // Update Time slider.
+    float pos = libvlc_media_player_get_position(vlcplr);
+    ui->timeSlider->setValue((int)(pos * 1000.0));
+
+    // Sum debug information.
+    std::cout << "Length: " << libvlc_media_player_get_length(vlcplr) << std::endl;
+    std::cout << "Current: " << libvlc_media_player_get_time(vlcplr) << std::endl;
 
     if(libvlc_media_player_get_state(vlcplr) == libvlc_Ended)
         stopPlayer();
-}
-
-/**
- * Adjust volume of playback video.
- * @brief StudioWindow::on_volSlider_valueChanged
- * @param value
- */
-void StudioWindow::on_volSlider_valueChanged(int value)
-{
-
-}
-
-/**
- * Adjust playback timeline in milliseconds.
- * Min and max range 0-1000. (0-999?)
- * @brief StudioWindow::on_msSlider_valueChanged
- * @param value
- */
-void StudioWindow::on_msSlider_valueChanged(int value)
-{
-
-}
-
-/**
- * Adjust playback timeline in seconds.
- * Min and max values range from 0-60. (Should it be 0-59)
- *
- * @brief StudioWindow::on_secSlider_valueChanged
- * @param value
- */
-void StudioWindow::on_secSlider_valueChanged(int value)
-{
-
 }
 
 /**
@@ -149,9 +133,72 @@ void StudioWindow::on_secSlider_valueChanged(int value)
  * @brief StudioWindow::on_timeSlider_valueChanged
  * @param value
  */
-void StudioWindow::on_timeSlider_valueChanged(int value)
-{
+void StudioWindow::on_timeSlider_sliderMoved(int position) {
+    if(vlcplr)
+        libvlc_media_player_set_position(vlcplr, (float)position/1000.0);
+}
 
+/**
+ * Adjust volume of playback video.
+ * @brief StudioWindow::on_volSlider_valueChanged
+ * @param value
+ */
+void StudioWindow::on_volSlider_sliderMoved(int position) {
+    if(vlcplr)
+        if(libvlc_audio_set_volume(vlcplr, position) == 0)
+            updateVolLabel(position);
+}
+
+/**
+ * Adjust playback timeline in seconds.
+ * Min and max values range from 0-60. (Should it be 0-59)
+ *
+ * @brief StudioWindow::on_secSlider_valueChanged
+ * @param value
+ */
+void StudioWindow::on_secSlider_sliderMoved(int position) {
+
+}
+
+/**
+ * Adjust playback timeline in milliseconds.
+ * Min and max range 0-1000. (0-999?)
+ * @brief StudioWindow::on_msSlider_valueChanged
+ * @param value
+ */
+void StudioWindow::on_msSlider_sliderMoved(int position) {
+
+}
+
+void StudioWindow::updateVolLabel(int vol) {
+    QString volume(QString::number(vol));
+    ui->volLbl->setText("Volume: " + volume);
+}
+
+/**
+ * Method to update Timeline label on Form.
+ * Hmm.. So basically one day is the limit here.
+ *
+ * @brief StudioWindow::updateTimeLabel
+ * @param s Seconds.
+ * @param m Minutes.
+ * @param h Hours.
+ */
+void StudioWindow::updateTimeLabel(long ms) {
+    long s = ms / 1000;
+    long m = s / 60;
+    long h = m / 60;
+
+    QString s_str(QString::number(s % 60));
+    QString m_str(QString::number(m % 60));
+    QString h_str(QString::number(h % 24));
+
+    QString time("Time ");
+    time.append(h_str + ":");
+    time.append(m_str + ":");
+    time.append(s_str);
+
+    ui->timeLbl->setText(time);
 }
 
 /**
@@ -190,6 +237,7 @@ void StudioWindow::stopPlayer() {
         // Time sliders.
         ui->timeSlider->setValue(0);
         ui->secSlider->setValue(0);
+        ui->msSlider->setValue(0);
         ui->playBtn->setText("Play"); // Play button.
         ui->timeLbl->setText("Time"); // Time label.
     }

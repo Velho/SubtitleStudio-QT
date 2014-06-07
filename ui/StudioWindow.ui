@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>390</height>
+    <width>677</width>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>431</width>
-      <height>341</height>
+      <width>651</width>
+      <height>381</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
@@ -32,8 +32,8 @@
     <widget class="QPushButton" name="playBtn">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>250</y>
+       <x>350</x>
+       <y>290</y>
        <width>71</width>
        <height>23</height>
       </rect>
@@ -45,8 +45,8 @@
     <widget class="QPushButton" name="stopBtn">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>250</y>
+       <x>430</x>
+       <y>290</y>
        <width>71</width>
        <height>23</height>
       </rect>
@@ -60,16 +60,16 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>411</width>
-       <height>201</height>
+       <width>631</width>
+       <height>241</height>
       </rect>
      </property>
     </widget>
     <widget class="QSlider" name="volSlider">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>300</y>
+       <x>350</x>
+       <y>340</y>
        <width>141</width>
        <height>20</height>
       </rect>
@@ -84,10 +84,10 @@
     <widget class="QLabel" name="volLbl">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>280</y>
-       <width>46</width>
-       <height>13</height>
+       <x>360</x>
+       <y>320</y>
+       <width>71</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
@@ -97,9 +97,9 @@
     <widget class="QLabel" name="timeLbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>230</y>
-       <width>71</width>
+       <x>60</x>
+       <y>270</y>
+       <width>151</width>
        <height>16</height>
       </rect>
      </property>
@@ -115,8 +115,8 @@
     <widget class="QSlider" name="secSlider">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>280</y>
+       <x>90</x>
+       <y>310</y>
        <width>151</width>
        <height>22</height>
       </rect>
@@ -131,11 +131,17 @@
     <widget class="QSlider" name="timeSlider">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>250</y>
-       <width>211</width>
+       <x>20</x>
+       <y>290</y>
+       <width>291</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -144,8 +150,8 @@
     <widget class="QSlider" name="msSlider">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>310</y>
+       <x>90</x>
+       <y>340</y>
        <width>151</width>
        <height>22</height>
       </rect>
@@ -166,8 +172,8 @@
     <widget class="QLabel" name="sinfoLbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>280</y>
+       <x>60</x>
+       <y>310</y>
        <width>21</width>
        <height>16</height>
       </rect>
@@ -179,8 +185,8 @@
     <widget class="QLabel" name="msinfoLbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>310</y>
+       <x>60</x>
+       <y>340</y>
        <width>21</width>
        <height>16</height>
       </rect>
@@ -196,7 +202,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>465</width>
+     <width>677</width>
      <height>21</height>
     </rect>
    </property>
