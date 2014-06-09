@@ -3,11 +3,10 @@
 
 #include <QFileDialog>
 
-// For printing debug stuff on output.
 #include <iostream>
 
 StudioWindow::StudioWindow(QWidget *parent) :
-    QMainWindow(parent), vlcplr(NULL), timer(new QTimer(this)),
+    QMainWindow(parent), vlcplr(NULL), timer(new QTimer(this)), paused(false),
     ui(new Ui::StudioWindow)
 {
     vlc = libvlc_new(0, NULL);
@@ -18,6 +17,8 @@ StudioWindow::StudioWindow(QWidget *parent) :
     }
 
     ui->setupUi(this);
+
+    ui->volSlider->setSliderPosition(80);
 
     // Draw black screen to videoWidget.
     ui->videoWidget->setAutoFillBackground(true);
@@ -61,8 +62,11 @@ void StudioWindow::onStop() {
  *
  * TODO Add support for opening multpile files into a playlist.
  * TODO Add multi platform.
+ *
  * TODO Even if media is not selected and this event is triggered,
  * play button's text get changed from play to pause. (BUG)
+ * TODO Make better solution for upper problem. Current solution
+ * is more like a hack..
  *
  * @brief StudioWindow::on_actionOpen_file_triggered
  */
@@ -73,7 +77,6 @@ void StudioWindow::on_actionOpen_file_triggered() {
         stopPlayer();
 
     // Create new media and give it file's path as utf8 const char*.
-    //PNT(test_func(file).toStdString());
     QString furi = makeURI(file);
     libvlc_media_t *media = libvlc_media_new_location(vlc, furi.toUtf8().constData());
 
@@ -91,8 +94,11 @@ void StudioWindow::on_actionOpen_file_triggered() {
     // Lets play it.
     libvlc_media_player_play(vlcplr);
 
-    if(file.size() != 0)
+    if(file.size() != 0) {
         ui->playBtn->setText("Pause");
+        return;
+    }
+    stopPlayer();
 }
 
 void StudioWindow::on_actionQuit_triggered() {
@@ -113,16 +119,16 @@ void StudioWindow::updateInterface() {
     long time = libvlc_media_player_get_time(vlcplr);
     updateTimeLabel(time);
 
-    // Update Time slider.
     float pos = libvlc_media_player_get_position(vlcplr);
-    ui->timeSlider->setValue((int)(pos * 1000.0));
+    ui->timeSlider->setSliderPosition((int)(pos * 1000));
+
 
     // Sum debug information.
-    std::cout << "Length: " << libvlc_media_player_get_length(vlcplr) << std::endl;
-    std::cout << "Current: " << libvlc_media_player_get_time(vlcplr) << std::endl;
+    //std::cout << "Length: " << libvlc_media_player_get_length(vlcplr) << std::endl;
+    //std::cout << "Current: " << libvlc_media_player_get_time(vlcplr) << std::endl;
 
     if(libvlc_media_player_get_state(vlcplr) == libvlc_Ended)
-        stopPlayer();
+        libvlc_media_player_stop(vlcplr); //stopPlayer();
 }
 
 /**
@@ -133,41 +139,63 @@ void StudioWindow::updateInterface() {
  * @brief StudioWindow::on_timeSlider_valueChanged
  * @param value
  */
-void StudioWindow::on_timeSlider_sliderMoved(int position) {
+void StudioWindow::on_timeSlider_valueChanged(int value) {
+    std::cout << "timeSlider_valueChanged: " << value << std::endl;
     if(vlcplr)
-        libvlc_media_player_set_position(vlcplr, (float)position/1000.0);
+        libvlc_media_player_set_position(vlcplr, (float)value / 1000);
+}
+
+/**
+ * Adjust playback timeline in seconds.
+ * Min and max values range from 0-60.
+ * Can only be adjusted while media is on pause.
+ *
+ * @brief StudioWindow::on_secSlider_valueChanged
+ * @param value
+ */
+void StudioWindow::on_secSlider_valueChanged(int value) {
+    if(vlcplr && paused) {
+        ui->sinfoLbl->setText(QString("Sec. ") + QString::number(value));
+
+        uint64_t t = currtime + (value * 1000);
+
+        std::cout << "currtime: " << currtime << std::endl;
+        std::cout << "secSlider t: " << t << std::endl;
+
+        libvlc_media_player_set_time(vlcplr, t);
+    }
+}
+
+/**
+ * Adjust playback timeline in milliseconds.
+ * Min and max range 0-1000.
+ * Can only be adjusted while media is on pause.
+ *
+ * @brief StudioWindow::on_msSlider_valueChanged
+ * @param value
+ */
+void StudioWindow::on_msSlider_valueChanged(int value) {
+    if(vlcplr && paused) {
+        ui->msinfoLbl->setText(QString("Ms. ") + QString::number(value));
+
+        uint64_t t = currtime + value;
+
+        std::cout << "currtime: " << currtime << std::endl;
+        std::cout << "msSlider t: " << t << std::endl;
+
+        libvlc_media_player_set_time(vlcplr, t);
+    }
 }
 
 /**
  * Adjust volume of playback video.
- * @brief StudioWindow::on_volSlider_valueChanged
+ * @brief StudioWindow::on_volSlider_sliderMoved
  * @param value
  */
 void StudioWindow::on_volSlider_sliderMoved(int position) {
     if(vlcplr)
         if(libvlc_audio_set_volume(vlcplr, position) == 0)
             updateVolLabel(position);
-}
-
-/**
- * Adjust playback timeline in seconds.
- * Min and max values range from 0-60. (Should it be 0-59)
- *
- * @brief StudioWindow::on_secSlider_valueChanged
- * @param value
- */
-void StudioWindow::on_secSlider_sliderMoved(int position) {
-
-}
-
-/**
- * Adjust playback timeline in milliseconds.
- * Min and max range 0-1000. (0-999?)
- * @brief StudioWindow::on_msSlider_valueChanged
- * @param value
- */
-void StudioWindow::on_msSlider_sliderMoved(int position) {
-
 }
 
 void StudioWindow::updateVolLabel(int vol) {
@@ -202,20 +230,33 @@ void StudioWindow::updateTimeLabel(long ms) {
 }
 
 /**
- * Starts the playback.
+ * Plays the media.
  * @brief StudioWindow::playPlayer
  */
 void StudioWindow::startPlayer() {
     if(!vlcplr)
         return;
 
+    // Playback. Much clearer way.. Though i dont like it. Maybe elseif??
+    if(ui->playbCBox->isChecked()) {
+        playback = true;
+        return;
+    } else
+        playback = false;
+
     if(libvlc_media_player_is_playing(vlcplr)) { // Is playing, do pause.
         libvlc_media_player_pause(vlcplr);
         ui->playBtn->setText("Play");
+
+        paused = true;
+        currtime = libvlc_media_player_get_time(vlcplr);
+
+        std::cout << "currtime: " << currtime << std::endl;
     }
     else { // Is paused, do play.
         libvlc_media_player_play(vlcplr);
         ui->playBtn->setText("Pause");
+        paused = false;
     }
 }
 

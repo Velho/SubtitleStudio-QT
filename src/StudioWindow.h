@@ -44,10 +44,11 @@ private slots:
 
     void updateInterface();
 
-    void on_timeSlider_sliderMoved(int position);
     void on_volSlider_sliderMoved(int position);
-    void on_secSlider_sliderMoved(int position);
-    void on_msSlider_sliderMoved(int position);
+
+    void on_timeSlider_valueChanged(int value);
+    void on_secSlider_valueChanged(int value);
+    void on_msSlider_valueChanged(int value);
 
 private:
     Ui::StudioWindow *ui;
@@ -55,6 +56,10 @@ private:
 
     libvlc_instance_t *vlc;
     libvlc_media_player_t *vlcplr;
+
+    bool playback;
+    bool paused;
+    uint64_t currtime;
 
     QString makeURI(QString path) {
         return "file:///" + path;

@@ -23,6 +23,7 @@ if(LIBVLC_FOUND)
 message(LIBVLC_FOUND)
 endif()
 
+
 include_directories(${LIBVLC_INCLUDE_DIR})
 #include_directories(${Qt5Core_INCLUDES}) # ${Qt5Widgets_INCLUDES})
 
@@ -37,7 +38,7 @@ add_subdirectory(src)
 
 set(TLIB ${LIBVLC_LIBRARY} ${LIBVLCCORE_LIBRARY})
 
-add_executable(${PRJ} ${SRC_LIST}) #${LIBVLC_LIBRARY})
+add_executable(${PRJ} WIN32 ${SRC_LIST}) #${LIBVLC_LIBRARY})
 target_link_libraries(${PRJ} ${TLIB})
 
 qt5_use_modules(${PRJ} Widgets)
