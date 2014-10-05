@@ -245,7 +245,11 @@
     <property name="title">
      <string>Studio</string>
     </property>
+    <addaction name="actionNew_project"/>
+    <addaction name="actionLoad_project"/>
+    <addaction name="separator"/>
     <addaction name="actionOpen_file"/>
+    <addaction name="actionExport_to"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
     <addaction name="actionQuit"/>
@@ -268,6 +272,21 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionNew_project">
+   <property name="text">
+    <string>New project</string>
+   </property>
+  </action>
+  <action name="actionLoad_project">
+   <property name="text">
+    <string>Load project</string>
+   </property>
+  </action>
+  <action name="actionExport_to">
+   <property name="text">
+    <string>Export</string>
    </property>
   </action>
  </widget>
