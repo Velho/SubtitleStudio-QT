@@ -16,13 +16,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # Find qt5 widgets package.
-find_package(Qt5Core REQUIRED Qt5Widgets REQUIRED Qt5Gui REQUIRED)
+find_package(Qt5Core REQUIRED Qt5Widgets REQUIRED Qt5Gui REQUIRED Qt5Sql REQUIRED)
 find_package(LIBVLC REQUIRED)
 
 if(LIBVLC_FOUND)
-message(LIBVLC_FOUND)
+    message(LIBVLC_FOUND)
 endif()
 
+
+set(QT_USE_QTSQL TRUE)
 
 include_directories(${LIBVLC_INCLUDE_DIR})
 #include_directories(${Qt5Core_INCLUDES}) # ${Qt5Widgets_INCLUDES})

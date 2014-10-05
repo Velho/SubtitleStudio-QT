@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>677</width>
-    <height>474</height>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,12 +27,12 @@
      <enum>Qt::DefaultContextMenu</enum>
     </property>
     <property name="title">
-     <string>Media output</string>
+     <string>Playback</string>
     </property>
     <widget class="QPushButton" name="playBtn">
      <property name="geometry">
       <rect>
-       <x>350</x>
+       <x>370</x>
        <y>290</y>
        <width>71</width>
        <height>23</height>
@@ -45,7 +45,7 @@
     <widget class="QPushButton" name="stopBtn">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>440</x>
        <y>290</y>
        <width>71</width>
        <height>23</height>
@@ -134,8 +134,8 @@
     <widget class="QSlider" name="timeSlider">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>290</y>
+       <x>230</x>
+       <y>270</y>
        <width>291</width>
        <height>22</height>
       </rect>
@@ -217,6 +217,19 @@
       <string>Playback</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>400</y>
+      <width>651</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Subtitle</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
