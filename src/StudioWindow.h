@@ -39,7 +39,6 @@ private slots:
     void onPlay();
     void onStop();
 
-    void on_actionOpen_file_triggered();
     void on_actionQuit_triggered();
 
     void updateInterface();
@@ -70,6 +69,8 @@ private:
 
     void startPlayer();
     void stopPlayer();
+
+    void openMedia(QString);
 };
 
 #endif // STUDIOWINDOW_H

@@ -230,6 +230,16 @@
     <property name="title">
      <string>Subtitle</string>
     </property>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>256</width>
+       <height>141</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -248,7 +258,7 @@
     <addaction name="actionNew_project"/>
     <addaction name="actionLoad_project"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_file"/>
+    <addaction name="actionImport"/>
     <addaction name="actionExport_to"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
@@ -287,6 +297,11 @@
   <action name="actionExport_to">
    <property name="text">
     <string>Export</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Import</string>
    </property>
   </action>
  </widget>

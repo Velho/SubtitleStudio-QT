@@ -56,51 +56,6 @@ void StudioWindow::onStop() {
     stopPlayer();
 }
 
-/**
- * Triggers when menu "Open file" is triggered.
- * Loads file from hard drive.
- *
- * TODO Add support for opening multpile files into a playlist.
- * TODO Add multi platform.
- *
- * TODO Even if media is not selected and this event is triggered,
- * play button's text get changed from play to pause. (BUG)
- * TODO Make better solution for upper problem. Current solution
- * is more like a hack..
- *
- * @brief StudioWindow::on_actionOpen_file_triggered
- */
-void StudioWindow::on_actionOpen_file_triggered() {
-    QString file = QFileDialog::getOpenFileName(this, tr("Open a file"));
-
-    if(vlcplr && libvlc_media_player_is_playing(vlcplr))
-        stopPlayer();
-
-    // Create new media and give it file's path as utf8 const char*.
-    QString furi = makeURI(file);
-    libvlc_media_t *media = libvlc_media_new_location(vlc, furi.toUtf8().constData());
-
-    if(!media) // Return on error.
-        return;
-
-    vlcplr = libvlc_media_player_new_from_media(media);
-
-    libvlc_media_release(media);
-
-    // FOLLOWING WORKS ONLY ON WINDOWS.
-    // On linux do X11 integration, on mac do nsobject(??) or whatever is the winmgr.
-    libvlc_media_player_set_hwnd(vlcplr, reinterpret_cast<void*>(ui->videoWidget->winId()));
-
-    // Lets play it.
-    libvlc_media_player_play(vlcplr);
-
-    if(file.size() != 0) {
-        ui->playBtn->setText("Pause");
-        return;
-    }
-    stopPlayer();
-}
-
 void StudioWindow::on_actionQuit_triggered() {
     stopPlayer();
     QCoreApplication::exit(0);
@@ -282,4 +237,42 @@ void StudioWindow::stopPlayer() {
         ui->playBtn->setText("Play"); // Play button.
         ui->timeLbl->setText("Time"); // Time label.
     }
+}
+
+/*!
+ * \brief StudioWindow::openMedia
+ * Starts the playback with selected file.
+ * \param file
+ * Playback file.
+ */
+void StudioWindow::openMedia(QString file) {
+    // Opens File Dialog to select the Media.
+    //QString file = QFileDialog::getOpenFileName(this, tr("Open a file"));
+
+    if(vlcplr && libvlc_media_player_is_playing(vlcplr))
+        stopPlayer();
+
+    // Create new media and give it file's path as utf8 const char*.
+    QString fileuri = makeURI(file);
+    libvlc_media_t *media = libvlc_media_new_location(vlc, fileuri.toUtf8().constData());
+
+    if(!media) // Return on error.
+        return;
+
+    vlcplr = libvlc_media_player_new_from_media(media);
+
+    libvlc_media_release(media);
+
+    // FOLLOWING WORKS ONLY ON WINDOWS.
+    // On linux do X11 integration, on mac do nsobject(??) or whatever is the winmgr.
+    libvlc_media_player_set_hwnd(vlcplr, reinterpret_cast<void*>(ui->videoWidget->winId()));
+
+    // Lets play it.
+    libvlc_media_player_play(vlcplr);
+
+    if(file.size() != 0) {
+        ui->playBtn->setText("Pause");
+        return;
+    }
+    stopPlayer();
 }
