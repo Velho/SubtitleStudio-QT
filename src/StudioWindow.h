@@ -12,6 +12,8 @@ namespace Ui {
 class StudioWindow;
 }
 
+class Project;
+
 /**
  * Wikipage about SubRip .srt format: en.wikipedia.org/wiki/SubRip
  * Plain structure of .srt format:
@@ -25,6 +27,7 @@ class StudioWindow;
  *
  *
  * TODO Implement sliders.
+ * TODO TimeEdit widget could be good tool to track playback time.
  * @brief The StudioWindow class
  */
 class StudioWindow : public QMainWindow {
@@ -49,9 +52,33 @@ private slots:
     void on_secSlider_valueChanged(int value);
     void on_msSlider_valueChanged(int value);
 
+    /*!
+     * \brief on_boldstyle_btn_clicked
+     * Apply bold style on subtitle.
+     */
+    void on_boldstyle_btn_clicked();
+    /*!
+     * \brief on_italicstyle_btn_clicked
+     * Apply italic style on subtitle.
+     */
+    void on_italicstyle_btn_clicked();
+    /*!
+     * \brief on_underlinestyle_btn_clicked
+     * Apply underline style on subtitle.
+     */
+    void on_underlinestyle_btn_clicked();
+
+    /*!
+     * \brief on_actionNew_project_triggered
+     * Display New Project Wizard.
+     */
+    void on_actionNew_project_triggered();
+
 private:
     Ui::StudioWindow *ui;
     QTimer *timer;
+
+    Project *project;
 
     libvlc_instance_t *vlc;
     libvlc_media_player_t *vlcplr;
@@ -59,6 +86,7 @@ private:
     bool playback;
     bool paused;
     uint64_t currtime;
+    float fps = 0.0;
 
     QString makeURI(QString path) {
         return "file:///" + path;

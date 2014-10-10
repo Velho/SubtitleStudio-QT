@@ -1,6 +1,8 @@
 #include "StudioWindow.h"
 #include "ui_StudioWindow.h"
 
+#include "NewProjectWizard.h"
+
 #include <QFileDialog>
 
 #include <iostream>
@@ -46,6 +48,7 @@ StudioWindow::~StudioWindow() {
     // Release the allocated memory.
     delete timer;
     delete ui;
+    delete project;
 }
 
 void StudioWindow::onPlay() {
@@ -211,7 +214,9 @@ void StudioWindow::startPlayer() {
     else { // Is paused, do play.
         libvlc_media_player_play(vlcplr);
         ui->playBtn->setText("Pause");
+
         paused = false;
+        fps = libvlc_media_player_get_fps(vlcplr);
     }
 }
 
@@ -227,6 +232,7 @@ void StudioWindow::stopPlayer() {
         // Release resources.
         libvlc_media_player_release(vlcplr);
         vlcplr = NULL;// NULL
+        fps = 0.0f;
 
         // Reset the UI values.
 
@@ -275,4 +281,31 @@ void StudioWindow::openMedia(QString file) {
         return;
     }
     stopPlayer();
+}
+
+/** STYLE **/
+void StudioWindow::on_boldstyle_btn_clicked()
+{
+
+}
+
+void StudioWindow::on_italicstyle_btn_clicked()
+{
+
+}
+
+void StudioWindow::on_underlinestyle_btn_clicked()
+{
+
+}
+/** **/
+
+/** MENU **/
+void StudioWindow::on_actionNew_project_triggered()
+{
+    NewProjectWizard newproject;
+
+    if(newproject.exec()) {
+        project = newproject.getProject(); // Get the new project.
+    }
 }
