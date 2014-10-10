@@ -16,7 +16,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # Find qt5 widgets package.
-find_package(Qt5Core REQUIRED Qt5Widgets REQUIRED Qt5Gui REQUIRED Qt5Sql REQUIRED)
+#find_package(Qt5Core REQUIRED Qt5Widgets REQUIRED Qt5Gui REQUIRED Qt5Sql REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Sql REQUIRED)
 find_package(LIBVLC REQUIRED)
 
 if(LIBVLC_FOUND)
@@ -27,6 +28,7 @@ endif()
 set(QT_USE_QTSQL TRUE)
 
 include_directories(${LIBVLC_INCLUDE_DIR})
+include_directories(${Qt_INCLUDE_DIR})
 #include_directories(${Qt5Core_INCLUDES}) # ${Qt5Widgets_INCLUDES})
 
 #add_definitions(${Qt5Widgets_DEFINITIONS})
@@ -38,12 +40,12 @@ include_directories(${LIBVLC_INCLUDE_DIR})
 # Add sources to the build.
 add_subdirectory(src)
 
-set(TLIB ${LIBVLC_LIBRARY} ${LIBVLCCORE_LIBRARY})
+set(TLIB ${LIBVLC_LIBRARY} ${LIBVLCCORE_LIBRARY} ${Qt_LIBRARIES})
 
 add_executable(${PRJ} WIN32 ${SRC_LIST}) #${LIBVLC_LIBRARY})
 target_link_libraries(${PRJ} ${TLIB})
 
-qt5_use_modules(${PRJ} Widgets)
+qt5_use_modules(${PRJ} Widgets Sql)
 
 qt5_wrap_ui(ui/ui_StudioWindow.h ui/StudioWindow.ui)
 
