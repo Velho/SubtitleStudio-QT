@@ -8,8 +8,8 @@ set(NPRJWIZ src/NewProjectWizard.h src/NewProjectWizard.cpp)
 
 # Project file format.
 set(PRJSRC src/Project.h src/Project.cpp)
-#set(SUBSRC src/Subtitle.h src/Subtitle.cpp)
-set(FILEFORMAT ${PRJSRC} )#${SUBSRC})
+set(SUBSRC src/Subtitle.h src/Subtitle.cpp)
+set(FILEFORMAT ${PRJSRC} ${SUBSRC})
 
 
 set(SRC_LIST 

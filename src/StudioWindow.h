@@ -1,8 +1,9 @@
 #ifndef STUDIOWINDOW_H
 #define STUDIOWINDOW_H
 
-#include <QtGui>
+#include <memory>
 
+#include <QtGui>
 #include <QMainWindow>
 #include <QMessageBox>
 
@@ -78,7 +79,7 @@ private:
     Ui::StudioWindow *ui;
     QTimer *timer;
 
-    Project *project;
+    std::unique_ptr<Project> project;
 
     libvlc_instance_t *vlc;
     libvlc_media_player_t *vlcplr;

@@ -2,6 +2,7 @@
 #define PROJECT_H
 
 #include <QtSql>
+#include "Subtitle.h"
 
 /*!
  * \brief The ProjectInfo enum
@@ -44,14 +45,37 @@ public:
      * \return
      * True if queries don't fail.
      */
-    void init(std::map<std::string, std::string> prj);
+    void init(std::map<ProjectInfo, std::string> prj);
+    /*!
+     * \brief load
+     * Queries vital project information
+     * from database.
+     */
+    void load();
 
-    QString getFile() const;
+
+    QString getName() const {
+        return prjname;
+    }
+
+    QString getAuthor() const {
+        return prjauthor;
+    }
+
+    QString getFile() const {
+        return dbfile;
+    }
 
 private:
     QSqlDatabase database;
-    QString dbfile;
+    QString dbfile;     //!
     bool fileopen;
+
+    QString prjname;    //! Project name.
+    QString prjauthor;  //! Author of the project.
+    QString prjfile;    //! Projects video file.
+
+    std::vector<Subtitle*> subtitles;
 };
 
 #endif // PROJECT_H

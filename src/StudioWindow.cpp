@@ -48,7 +48,6 @@ StudioWindow::~StudioWindow() {
     // Release the allocated memory.
     delete timer;
     delete ui;
-    delete project;
 }
 
 void StudioWindow::onPlay() {
@@ -306,6 +305,9 @@ void StudioWindow::on_actionNew_project_triggered()
     NewProjectWizard newproject;
 
     if(newproject.exec()) {
-        project = newproject.getProject(); // Get the new project.
+        // Wrap new project into smart pointer.
+        project = std::unique_ptr<Project>{ newproject.getProject() };
+        if(project.get() != nullptr) // Idiot check.
+            setWindowTitle("");
     }
 }

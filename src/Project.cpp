@@ -1,10 +1,18 @@
 #include "Project.h"
-#include <iostream>
+
+/*!
+ * \brief String equivalent to ProjectInfo enum class(ProjectToStr).
+ */
+std::map<ProjectInfo, std::string> prjtostr {
+    { ProjectInfo::NAME, "prjname" },
+    { ProjectInfo::AUTHOR, "prjauthor" },
+    { ProjectInfo::FILE, "prjfile" }
+};
 
 Project::Project(QString file) :
-    database{ QSqlDatabase::addDatabase("QSQLITE") },
     dbfile{ file }
 {
+    database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName(dbfile);
     database.open();
 }
@@ -18,19 +26,14 @@ Project::~Project()
         database.close(); // Close the database.
 }
 
-QString Project::getFile() const
-{
-    return dbfile;
-}
-
-void Project::init(std::map<std::string, std::string> prj)
+void Project::init(std::map<ProjectInfo, std::string> prj)
 {
     // TESTING MULTIPLE QUERIES WITH ONE OBJECT.
     QSqlQuery query(database);
 
     // Create Project table which holds general information about the project.
     if(!query.exec("CREATE TABLE Project(idx INT AUTO INCREMENT PRIMARY KEY, key TEXT, value TEXT);")) {
-        std::cout << "Error while creating Project." << std::endl;
+        qDebug("Error while creating Project.");
         return;
     }
 
@@ -40,15 +43,27 @@ void Project::init(std::map<std::string, std::string> prj)
                    "start_frame INT, "
                    "end_frame INT, "
                    "text TEXT);")) {
-        std::cout << "Error while creating Subtitle." << std::endl;
+        qDebug("Error while creating Subtitle.");
         return;
     }
 
+    /**/
+
     // Retrieve project information from prj map.
     for(auto p : prj) {
+
         QString sql("INSERT INTO Project(key, value) VALUES('" +
-                    QString::fromStdString(p.first) + "', '" + QString::fromStdString(p.second) + "');");
-        std::cout << sql.toStdString() << std::endl;
+                    QString::fromStdString(prjtostr[p.first]) + "', '" +
+                    QString::fromStdString(p.second) + "');");
+
+
         query.exec(sql);
     }
+}
+
+void Project::load()
+{
+    //QSqlQuery query("SELECT key, value FROM Project")
+
+
 }

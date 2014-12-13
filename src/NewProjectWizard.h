@@ -29,7 +29,16 @@ public:
     Project *getProject();
 
 private:
-    //Project project;
+    Project *project;
+
+    /*!
+     * \brief getProjectFilename
+     * Forms a filename for Project file.
+     * \return
+     * New filename from projects file name.
+     * E.g. File.name.mp4 -> File.name.studio
+     */
+    std::string getProjectFilename(QString);
 };
 
 /*!
