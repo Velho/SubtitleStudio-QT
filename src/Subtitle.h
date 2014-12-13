@@ -1,7 +1,7 @@
 #ifndef SUBTITLE_H
 #define SUBTITLE_H
 
-#include <string>
+#include <QString>
 
 /*!
  * \brief The Subtitle class
@@ -25,8 +25,8 @@ public:
      * \param t
      * The actual subtitle text.
      */
-    Subtitle(int idx, int start, int end, std::string t) :
-        index{ idx },startframe{ start }, endframe{ end }, text{ t }
+    Subtitle(int idx, int start, int end, QString t) :
+        index{ idx }, startframe{ start }, endframe{ end }, text{ t }
     { }
 
     /*!
@@ -56,13 +56,13 @@ public:
      * \return
      * std::string text;
      */
-    std::string getText() const { return text; }
+    QString getText() const { return text; }
 
 private:
     int index;
     int startframe;
     int endframe;
-    std::string text;
+    QString text;
 };
 
 #endif // SUBTITLE_H
